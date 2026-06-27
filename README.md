@@ -1,4 +1,4 @@
-# 📬 Java SMTP 邮件发送入门实战教程与示例项目 -- Java SMTP Learning Project -- Send mail by java and smtp
+# 📬 Java SMTP 邮件发送入门实战与示例项目 -- Java SMTP Learning Project -- Send mail by java and smtp
 
 本仓库是一个循序渐进的 Java SMTP 邮件发送教学与示例项目。它基于底层 `javax.mail` 构建，通过从简到繁的六个核心学习步骤，指导开发者全面掌握网络连接建立、群发列表解析校验、模板正则填装、嵌套 MIME 容器拼装、中文名防乱码以及企业级 DTO 一键式封装等经典工业发送模型。
 
