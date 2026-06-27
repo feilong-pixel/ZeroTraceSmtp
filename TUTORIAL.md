@@ -1,25 +1,25 @@
-# 📬 Java SMTP 邮件发送入门实战
+# 📬 Java SMTP 邮件发送集成与开发指南
 
-本教程是一份结合本项目源码的 Java SMTP 邮件发送教学指南。教程通过十个核心章节，从底层的 SMTP 协议基础开始，逐步介绍项目中各个 Demo 类的设计与实践，指导您全面掌握邮件发送的工业级最佳实践。
-
----
-
-## 🗂️ 教程目录
-
-* **[第一章：SMTP 协议与连接基础 (SMTP Fundamentals)](#第一章smtp-协议与连接基础-smtp-fundamentals)** —— 协议命令、端口及 `mail.properties`
-* **[第二章：发送你的第一封邮件 (Send Your First Mail)](#第二章发送你的第一封邮件-send-your-first-mail)** —— 资源管理与 `SendMialBySmtpDemo` 单发
-* **[第三章：富文本 HTML 邮件 (HTML Mail)](#第三章富文本-html-邮件-html-mail)** —— MIME 支持与 `SendMialBySmtpDemo` 的 HTML 渲染
-* **[第四章：多收件人与抄送/密送处理 (Multiple Recipients)](#第四章多收件人与抄送密送处理-multiple-recipients)** —— `MultipleRecipientsDemo` 与严格格式校验
-* **[第五章：附件拼装与中文防乱码保护 (Attachments)](#第五章附件拼装与中文防乱码保护-attachments)** —— `AttachmentSmtpDemo` 与 `AttachmentMailHelper` 
-* **[第六章：极简高性能 HTML 模板引擎 (Template Engine)](#第六章极简高性能-html-模板引擎-template-engine)** —— `TemplateSmtpDemo` 与 `TemplateEngine` 解析
-* **[第七章：企业级统一 DTO 与嵌套 MIME 复合模型 (Unified MailRequest)](#第七章企业级统一-dto-与嵌套-mime-复合模型-unified-mailrequest)** —— `UnifiedSmtpDemo` 与 `MailRequest`
-* **[第八章：适配 Amazon SES 公有云邮件投递 (Amazon SES)](#第八章适配-amazon-ses-公有云邮件投递-amazon-ses)** —— `AmazonSesDemo` 与云端 SMTP 密码踩坑防范
-* **[第九章：离线开发模拟与拦截模式 (Debug Mode)](#第九章离线开发模拟与拦截模式-debug-mode)** —— `debugFlag` 离线双模调试
-* **[第十章：生产级高可用与工程实践防坑 (Best Practices)](#第十章生产级高可用与工程实践防坑-best-practices)** —— 属性超时、SLF4J 统一日志及可见性隔离
+本文档是一份结合本项目源码的 Java SMTP 邮件发送说明指南。文档共分为十个核心部分，从底层的 SMTP 协议基础开始，逐步介绍项目中各个组件的设计与实现，以便于您在生产环境中集成与应用。
 
 ---
 
-## 第一章：SMTP 协议与连接基础 (SMTP Fundamentals)
+## 🗂️ 文档目录
+
+* **[1. SMTP 协议与连接基础 (SMTP Fundamentals)](#1-smtp-协议与连接基础-smtp-fundamentals)** —— 协议命令、端口及 `mail.properties`
+* **[2. 基础邮件单发实现 (Single Mail Sending)](#2-基础邮件单发实现-single-mail-sending)** —— 资源管理与 `SendMialBySmtpDemo` 单发
+* **[3. 富文本 HTML 邮件支持 (HTML Mail)](#3-富文本-html-邮件支持-html-mail)** —— MIME 支持与 `SendMialBySmtpDemo` 的 HTML 渲染
+* **[4. 多收件人与抄送/密送处理 (Multiple Recipients)](#4-多收件人与抄送密送处理-multiple-recipients)** —— `MultipleRecipientsDemo` 与严格格式校验
+* **[5. 附件拼接与中文名编码保护 (Attachments)](#5-附件拼接与中文名编码保护-attachments)** —— `AttachmentSmtpDemo` 与 `AttachmentMailHelper` 
+* **[6. 轻量级 HTML 模板渲染 (Template Engine)](#6-轻量级-html-模板渲染-template-engine)** —— `TemplateSmtpDemo` 与 `TemplateEngine` 解析
+* **[7. 统一 API 与嵌套 MIME 复合模型 (Unified MailRequest)](#7-统一-api-与嵌套-mime-复合模型-unified-mailrequest)** —— `UnifiedSmtpDemo` 与 `MailRequest`
+* **[8. 适配 Amazon SES 投递 (Amazon SES)](#8-适配-amazon-ses-投递-amazon-ses)** —— `AmazonSesDemo` 与云端 SMTP 密码认证防范
+* **[9. 本地开发模拟与拦截模式 (Debug / Intercept Mode)](#9-本地开发模拟与拦截模式-debug--intercept-mode)** —— `debugFlag` 离线双模调试
+* **[10. 生产级高可用工程实践 (Best Practices)](#10-生产级高可用工程实践-best-practices)** —— 属性超时、SLF4J 统一日志及可见性隔离
+
+---
+
+## 1. SMTP 协议与连接基础 (SMTP Fundamentals)
 
 ### 1.1 SMTP 协议核心命令
 SMTP (Simple Mail Transfer Protocol) 协议由客户端与服务器通过纯文本 Socket 指令进行会话交互。核心的协议交互命令如下：
@@ -50,9 +50,9 @@ mail.smtp.ssl.enable=false
 
 ---
 
-## 第二章：发送你的第一封邮件 (Send Your First Mail)
+## 2. 基础邮件单发实现 (Single Mail Sending)
 
-本章介绍如何利用本项目中的 `SmtpClient` 及 `SendMialBySmtpDemo` 类进行最基础的单发邮件。
+本部分介绍如何使用项目中的 `SmtpClient` 及 `SendMialBySmtpDemo` 类进行基础的单发邮件。
 
 ### 2.1 资源安全释放 (AutoCloseable)
 邮件网络连接是非常宝贵的网络套接字资源。本项目中的 [SmtpClient.java](src/main/java/com/feilonglab/smtp/basic/SmtpClient.java) 实现了 `AutoCloseable` 接口，确保在使用完毕后，通过 `try-with-resources` 自动触发 `close()` 释放网络套接字句柄。
@@ -101,7 +101,7 @@ public class SendSingleMailExample {
 
 ---
 
-## 第三章：富文本 HTML 邮件 (HTML Mail)
+## 3. 富文本 HTML 邮件支持 (HTML Mail)
 
 现代应用极少发送纯文本邮件，多以富文本（HTML）表格、图片为主。
 
@@ -121,9 +121,9 @@ client.sendMail(recipientName, recipientEmail, subject, content);
 
 ---
 
-## 第四章：多收件人与抄送/密送处理 (Multiple Recipients)
+## 4. 多收件人与抄送/密送处理 (Multiple Recipients)
 
-日常业务中，需要一封信发送给多个人。本章演示 TO (收件人)、CC (抄送)、BCC (密送) 的多收件人处理。
+在实际业务中，常需要将一封邮件发送给多个接收者。本部分说明 TO (收件人)、CC (抄送)、BCC (密送) 的多收件人配置。
 
 ### 4.1 本项目核心实现
 在 [SmtpClient.java](src/main/java/com/feilonglab/smtp/basic/SmtpClient.java) 中，通过 `setRecipients` 方法为 `MimeMessage` 分级设置多地址：
@@ -164,7 +164,7 @@ public class MultipleRecipientsApp {
 
 ---
 
-## 第五章：附件拼装与中文防乱码保护 (Attachments)
+## 5. 附件拼接与中文名编码保护 (Attachments)
 
 发送报表、对账单等文件需要用到邮件附件功能。
 
@@ -217,7 +217,7 @@ public class AttachmentApp {
 
 ---
 
-## 第六章：极简高性能 HTML 模板引擎 (Template Engine)
+## 6. 轻量级 HTML 模板渲染 (Template Engine)
 
 企业级邮件通知通常需要将订单数据动态渲染到 HTML 模板中。
 
@@ -261,9 +261,9 @@ public class TemplateApp {
 
 ---
 
-## 第七章：企业级统一 DTO 与嵌套 MIME 复合模型 (Unified MailRequest)
+## 7. 统一 API 与嵌套 MIME 复合模型 (Unified MailRequest)
 
-对于同时需要处理多收件人、纯文本备用描述、模板和多附件的复杂发送请求，直接的方法参数传递会显得力不从心。本章介绍项目提供的统一发送架构。
+对于同时需要处理多收件人、纯文本备用描述、模板和多附件的复杂发送请求，直接通过方法参数传递较为繁琐。本部分介绍项目提供的统一发送架构。
 
 ### 7.1 MailRequest 链式 DTO
 [MailRequest.java](src/main/java/com/feilonglab/smtp/unified/MailRequest.java) 封装了所有的信件属性，且内置了链式 Setter (Builder-like Pattern) 供开发者优雅地组装属性：
@@ -321,7 +321,7 @@ public class UnifiedApp {
 
 ---
 
-## 第八章：适配 Amazon SES 公有云邮件投递 (Amazon SES)
+## 8. 适配 Amazon SES 投递 (Amazon SES)
 
 Amazon Simple Email Service (SES) 是业界主流的云端邮件平台。
 
@@ -361,7 +361,7 @@ public class AmazonSesApp {
 
 ---
 
-## 第九章：离线开发模拟与拦截模式 (Debug Mode)
+## 9. 本地开发模拟与拦截模式 (Debug / Intercept Mode)
 
 在本地测试或持续集成 CI/CD 环境下，如果每次测试都向外网真实投递邮件，容易触发服务商风控判定为垃圾邮件而封号。
 
@@ -391,7 +391,7 @@ mail.smtp.debug.flag=0
 
 ---
 
-## 第十章：生产级高可用与工程实践防坑 (Best Practices)
+## 10. 生产级高可用工程实践 (Best Practices)
 
 在将 Java 邮件投递功能推向线上生产环境时，必须遵循以下高可用准则。
 

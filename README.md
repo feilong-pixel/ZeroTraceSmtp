@@ -1,25 +1,25 @@
-# 📬 Java SMTP 邮件发送入门实战与示例项目 -- Java SMTP Learning Project -- Send mail by java and smtp
+# 📬 Java SMTP 邮件发送集成与示例项目 -- Java SMTP Client Library & Examples
 
-本仓库是一个循序渐进的 Java SMTP 邮件发送教学与示例项目。它基于底层 `javax.mail` 构建，通过从简到繁的六个核心学习步骤，指导开发者全面掌握网络连接建立、群发列表解析校验、模板正则填装、嵌套 MIME 容器拼装、中文名防乱码以及企业级 DTO 一键式封装等经典工业发送模型。
+本仓库是一个开箱即用的 Java SMTP 邮件发送组件与示例项目。它基于底层 `javax.mail` 构建，提供了网络连接建立、群发列表解析校验、模板正则填装、嵌套 MIME 容器拼装、中文名防乱码以及一站式 API 封装等功能，适用于各种 Java 邮件发送场景。
 
 ---
 
-## 🗺️ 循序渐进的系统学习路线
+## 🗺️ 项目模块与包结构设计
 
-项目划分了清晰的功能子包，建议读者按照以下主线逐步深入学习：
+项目划分了清晰的功能子包，分别实现了不同的邮件发送逻辑与特性：
 
-1. **第一阶段：`com.feilonglab.smtp.basic` (基础起步)**
-   * **学习重点**：SMTP 服务端的基本参数配置，利用 `Session` 和 `Transport` 实现与邮件中转站的握手建立，以及基于 try-with-resources 的套接字连接资源释放。
-2. **第二阶段：`com.feilonglab.smtp.multiple` (多收件人解析)**
-   * **学习重点**：如何将单封邮件同时投递至 TO (收件人) / CC (抄送) / BCC (密送) 三类不同列表，重点学习严格校验单个邮箱 RFC 822 规范及群发异常隔离。
-3. **第三阶段：`com.feilonglab.smtp.Template` (模板正则动态填充)**
-   * **学习重点**：避免使用笨重的重量级解析框架，采用极简且高性能的单遍扫描正则表达式引擎，完成 `${key}` 占位符的安全渲染与中文出错日志翻译。
-4. **第四阶段：`com.feilonglab.smtp.attachments` (附件拼装与中文防乱码)**
-   * **学习重点**：学习符合 RFC MIME 规范的文件载入模型，并使用 `MimeUtility.encodeText` 对中文字符包名进行编码保护，杜绝客户端展现乱码问题。
-5. **第五阶段：`com.feilonglab.smtp.unified` (企业级统一链式 API 封装)**
-   * **学习重点**：采用组合式参数传输对象 `MailRequest` 进行链式配置 (Builder-like)；掌握 RFC 黄金标准的 **嵌套 MIME 复合模型** (`multipart/alternative` 内嵌在 `multipart/mixed` 中)；封装本地 Intercept 双模拦截日志。
-6. **实战番外：`com.feilonglab.smtp.amazon.ses` (公有云云端适配)**
-   * **学习重点**：理解 AWS 专属的 SES regional endpoints 和特殊的 SMTP 服务认证证书（而非 IAM 访问秘钥），实现生产云端投递。
+1. **基础客户端：`com.feilonglab.smtp.basic`**
+   * **核心实现**：SMTP 服务端的基本参数配置，利用 `Session` 和 `Transport` 实现与邮件服务器的连接建立，以及基于 `try-with-resources` 的套接字连接资源自动释放。
+2. **多收件人发送：`com.feilonglab.smtp.multiple`**
+   * **核心实现**：支持将单封邮件同时投递至 TO (收件人) / CC (抄送) / BCC (密送) 列表，并实现单个邮箱 RFC 822 规范校验及异常隔离。
+3. **模板引擎渲染：`com.feilonglab.smtp.Template`**
+   * **核心实现**：采用轻量且高性能的单遍扫描正则表达式引擎，完成 `${key}` 占位符的渲染与异常处理。
+4. **附件拼接与乱码处理：`com.feilonglab.smtp.attachments`**
+   * **核心实现**：基于 RFC MIME 规范的附件加载，并使用 `MimeUtility.encodeText` 对中文附件名进行编码，解决客户端乱码问题。
+5. **统一链式 API 封装：`com.feilonglab.smtp.unified`**
+   * **核心实现**：采用组合式参数传输对象 `MailRequest` 进行链式配置 (Builder-like)；实现 **嵌套 MIME 复合模型** (`multipart/alternative` 内嵌在 `multipart/mixed` 中)；提供本地 Intercept 拦截模式。
+6. **云服务（Amazon SES）适配：`com.feilonglab.smtp.amazon.ses`**
+   * **核心实现**：支持通过 Amazon SES SMTP endpoints 进行云端邮件投递。
 
 ---
 
@@ -44,7 +44,7 @@
 
 ---
 
-## 🚀 循序渐进使用示例 (Step-by-step Examples)
+## 🚀 邮件发送使用示例 (Code Examples)
 
 #### 1. 基础单发邮件示例 (Basic Single Sending)
 最简单的发送邮件场景：单发 HTML 邮件给单个收件人，捕获连接阶段和发送阶段各自的异常。
